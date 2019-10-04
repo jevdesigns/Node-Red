@@ -1,0 +1,149 @@
+[
+    {
+        "id": "7232d874.43254",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "bef316a3.22e72",
+        "type": "mqtt in",
+        "z": "7232d874.43254",
+        "name": "Kitchen Lights Status",
+        "topic": "stat/klights/POWER",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "c1954da8.d8bb08",
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "21dae866.f920f"
+            ]
+        ]
+    },
+    {
+        "id": "9872b1a.25a305",
+        "type": "mqtt out",
+        "z": "7232d874.43254",
+        "name": "Kitchen Lights",
+        "topic": "cmnd/klights/POWER",
+        "qos": "1",
+        "retain": "false",
+        "broker": "c1954da8.d8bb08",
+        "x": 640,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "54729983.2764a8",
+        "type": "alexa-smart-home-v3",
+        "z": "7232d874.43254",
+        "conf": "d93f5e79.3cf378",
+        "device": "2468",
+        "acknowledge": true,
+        "name": "Kitchen Lights",
+        "topic": "",
+        "x": 110,
+        "y": 280,
+        "wires": [
+            [
+                "c2ce6d80.08df48",
+                "d3c4c319.0174a",
+                "4655b0b1.c3e8c"
+            ]
+        ]
+    },
+    {
+        "id": "c2ce6d80.08df48",
+        "type": "alexa-smart-home-v3-state",
+        "z": "7232d874.43254",
+        "conf": "d93f5e79.3cf378",
+        "device": "2468",
+        "name": "Kitchen Lights",
+        "x": 700,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "21dae866.f920f",
+        "type": "function",
+        "z": "7232d874.43254",
+        "name": "get info from the MQTT state",
+        "func": "var tokens = msg.topic.split(\"/\");\nvar device = tokens[1];\nvar element = tokens[2]\nvar state = msg.payload;\n\n// MQTT POWER State\nif (element == 'POWER') {\n    return { \"payload\" : { \"state\" : { \"power\" : state } }, \"acknowledge\" : true };\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 420,
+        "y": 80,
+        "wires": [
+            [
+                "c2ce6d80.08df48"
+            ]
+        ]
+    },
+    {
+        "id": "d3c4c319.0174a",
+        "type": "function",
+        "z": "7232d874.43254",
+        "name": "Check command",
+        "func": "if (msg.command == \"TurnOn\" || msg.command == \"TurnOff\") {\n    msg.topic = \"cmnd/klights/POWER\"\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 280,
+        "wires": [
+            [
+                "9872b1a.25a305"
+            ]
+        ]
+    },
+    {
+        "id": "4655b0b1.c3e8c",
+        "type": "debug",
+        "z": "7232d874.43254",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 260,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "c1954da8.d8bb08",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "MQTT Server",
+        "broker": "10.0.0.2",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": ""
+    },
+    {
+        "id": "d93f5e79.3cf378",
+        "type": "alexa-smart-home-v3-conf",
+        "z": "",
+        "username": "kupemo",
+        "mqttserver": "mq-red.cb-net.co.uk",
+        "webapiurl": "red.cb-net.co.uk"
+    }
+]
